@@ -1,5 +1,6 @@
 import {
   SafeAreaView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -7,11 +8,26 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
+import { useDispatch } from "react-redux";
+import { register } from "../store/authslice";
 
 const RegisterScreen = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
+
+  const handleRegister = () => {
+    try {
+      const user = { email, password, isAdmin }; // Incluindo a senha
+      dispatch(register(user));
+      console.log(user);
+      router.back();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 justify-center items-center bg-white">
@@ -40,10 +56,15 @@ const RegisterScreen = () => {
           secureTextEntry
         />
 
+        <View className="flex-row items-center mb-4">
+          <Text className="mr-2">Admin:</Text>
+          <Switch value={isAdmin} onValueChange={setIsAdmin} />
+        </View>
+
         {/* Register btn */}
         <TouchableOpacity
-          className="bg-blue-500 p-3 rounded-md mb-4"
-          onPress={() => router.push("/(tabs)")}
+          className="bg-cyan-500 p-3 rounded-md mb-4"
+          onPress={handleRegister}
         >
           <Text className="text-white text-center">Register</Text>
         </TouchableOpacity>

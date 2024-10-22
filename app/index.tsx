@@ -5,13 +5,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/authslice";
+import { RootState } from "../store/store";
+import { useFocusEffect } from "@react-navigation/native";
 
 const LoginScreen = () => {
+  const router = useRouter();
+
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthenticated) {
+        console.log("authenticated");
+        router.push("/(tabs)");
+      }
+    }, [isAuthenticated, router])
+  );
+  const handleLogin = () => {
+    const user = { email, password };
+
+    dispatch(login(user));
+    {
+      isAuthenticated
+        ? Toast.show({
+            type: "success",
+            text1: "Login successfull",
+            visibilityTime: 4000,
+            position: "top",
+          })
+        : Toast.show({
+            type: "error",
+            text1: "User name or password incorrect",
+
+            visibilityTime: 4000,
+            position: "top",
+          });
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 justify-center items-center bg-white">
@@ -40,19 +80,20 @@ const LoginScreen = () => {
 
         {/* login btn */}
         <TouchableOpacity
-          className="bg-blue-500 p-3 rounded-md mb-4"
-          onPress={() => router.push("/(tabs)")}
+          className="bg-green-500 p-3 rounded-md"
+          onPress={handleLogin}
         >
           <Text className="text-white text-center">Login</Text>
         </TouchableOpacity>
 
         {/* regiter */}
         <TouchableOpacity
-          className="bg-green-500 p-3 rounded-md"
+          className="bg-cyan-500 p-3 rounded-md mt-4"
           onPress={() => router.push("/register")}
         >
           <Text className="text-white text-center">Register</Text>
         </TouchableOpacity>
+        <Toast />
       </View>
     </SafeAreaView>
   );

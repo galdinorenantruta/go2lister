@@ -1,12 +1,14 @@
 import { Tabs } from "expo-router";
 import React from "react";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isAdmin = useSelector((state: RootState) => state.auth.user?.isAdmin);
 
   return (
     <Tabs
@@ -45,10 +47,12 @@ export default function TabLayout() {
           title: "Admin",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name={focused ? "shield" : "shield-outline"}
               color={color}
             />
           ),
+
+          tabBarButton: isAdmin ? undefined : () => null,
         }}
       />
     </Tabs>
