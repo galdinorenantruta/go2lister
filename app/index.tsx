@@ -29,8 +29,9 @@ const LoginScreen = () => {
         console.log("authenticated");
         router.push("/(tabs)");
       }
-    }, [isAuthenticated, router])
+    }, [isAuthenticated])
   );
+
   const handleLogin = () => {
     const user = { email, password };
 
@@ -93,8 +94,8 @@ const LoginScreen = () => {
         >
           <Text className="text-white text-center">Register</Text>
         </TouchableOpacity>
-        <Toast />
       </View>
+      <Toast />
     </SafeAreaView>
   );
 };
